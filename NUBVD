@@ -1,0 +1,286 @@
+HTML
+
+<html>
+<head>
+    <title>Math</title>
+</head>
+<body>
+    <div class ='container start'>
+        <h3 class='container_h3'> </h3>
+        <div class="start-btn">Начать</div>
+    </div>
+
+    <div class='container main'>
+        <div class='number1'>23 - 7</div>
+        <div class="answers">
+            <div class="answer">2</div>
+            <div class="answer">3</div>
+            <div class="answer">16</div>
+            <div class="answer">20</div>
+            <div class="answer">19</div>
+            <script src='https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js'></script>
+        </div>
+    </div>
+    </body>
+    </html>
+
+
+
+
+JavaScript
+
+let number1 = document.querySelector(".number1")
+let answers = document.querySelectorAll('.answer')
+let container_h3 = document.querySelector('.container_h3')
+
+let container_main = document.querySelector('.main')
+let container_start = document.querySelector('.start')
+
+let start_button = document.querySelector('.start-btn')
+
+
+
+
+let signs = ['+', '-', '*', '/']
+
+function getrandomsign() {
+    return signs[randomnumber(0,3)]
+}
+
+function randomnumber(min, max) {
+    return Math.round(Math.random() *(max-min) + min)
+}
+
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  while (currentIndex != 0) { // Цикл повторяется до тех пор, пока остаются элементы для перемешивания
+    randomIndex = Math.floor(Math.random() * currentIndex); // Выбираем оставшийся элемент.
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [    // Меняем местами с текущим элементом.
+      array[randomIndex], array[currentIndex]];
+  }
+  return array; // Возвращаем перемешанный массив
+}
+
+
+class Question {
+    constructor() {
+        let a = randomnumber(1, 30)
+        let b = randomnumber(1, 30)
+        let current_sign = getrandomsign()
+        if(current_sign == '+') {
+            this.question = `${a}+${b}`;
+            this.correct = a + b;
+        }
+
+        if (current_sign == '-') {
+            this.question = `${a}-${b}`;
+            this.correct = a - b;
+        }
+
+        if (current_sign == '*') {
+            this.question = `${a}*${b}`;
+            this.correct = a * b;
+        }
+
+        if (current_sign == '/') {
+            this.question = `${a}/${b}`;
+            this.correct = Math.round(a / b);
+        }
+
+        this.vopsosiki = [
+            randomnumber(this.correct - 15, this.correct - 1),
+            randomnumber(this.correct - 15, this.correct - 1),
+            this.correct,
+            randomnumber(this.correct - 15, this.correct - 1),
+            randomnumber(this.correct - 15, this.correct - 1)
+        ]
+        shuffle(this.vopsosiki)
+    }
+
+    display() {
+        number1.innerHTML = this.question
+        for (let i = 0; i < 5; i += 1){
+            answers[i].innerHTML = this.vopsosiki[i]
+        }}}
+
+
+
+let chet = 0
+
+
+let curentAns = new Question()
+curentAns.display()
+right_ans = 0
+
+start_button.addEventListener('click', function() {
+        container_start.style.display = 'none'
+        container_main.style.display = 'flex'
+        chet = 0
+        right_ans = 0
+
+setTimeout(function(){
+    container_start.style.display = 'flex'
+    container_main.style.display = 'none'
+container_h3.innerHTML = `Вы дали ${right_ans} правильных ответов из ${chet}.
+Точность - ${Math.round(right_ans*100/chet)}%`
+}, 10000)
+
+})
+
+
+for (let i = 0; i < 5; i += 1){
+    answers[i].addEventListener('click', function() {
+        if (answers[i].innerHTML == curentAns.correct) {
+            console.log("Верный")
+            right_ans += 1
+            answers[i].style.background = '#00FF00'
+            anime({
+                targets: answers[i],
+                backgroundColor: '#FFFFFF',
+                delay: 100,
+                duration: 500,
+                easing: 'linear'
+            })
+        } 
+        else {
+            console.log("Неверный")   
+            answers[i].style.background = '#FF0000'
+            anime({
+                targets: answers[i],
+                backgroundColor: '#FFFFFF',
+                delay: 100,
+                duration: 500,
+                easing: 'linear'
+            })
+        }
+
+
+        chet += 1
+
+
+        curentAns = new Question()
+        curentAns.display()
+    })
+}
+
+
+
+
+
+CSS
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+body {
+    font-family: 'Montserrat', sans-serif;
+
+}
+
+.number1{
+    font-size: 100px;
+
+}
+
+.container_h3{
+
+}
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 600px;
+    height: 300px;
+}
+
+.answers{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+}
+
+.answer{
+    font-size: 25px;
+    width: 65px; height: 65px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.start-btn{
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: #111;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.start-btn:hover{
+    background: gray;
+    
+
+}
+
+.main{
+    display: none;
+}
+
+
+.start-btn:before {
+    content: '';
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.start-btn:active {
+    color: #000
+}
+
+.start-btn:active:after {
+    background: transparent;
+}
+
+.start-btn:hover:before {
+    opacity: 1;
+}
+
+.start-btn:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
